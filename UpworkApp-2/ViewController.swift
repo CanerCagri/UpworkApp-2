@@ -9,6 +9,8 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    let containerView = UIView()
+    
     let imageView: UIImageView = {
         var view = UIImageView()
         view.image = UIImage(systemName: "circle")
@@ -34,6 +36,7 @@ class ViewController: UIViewController {
     }
     
     @objc func buttonTaped() {
+        print("click")
         showImagePickerOptions()
     }
     
@@ -70,8 +73,13 @@ class ViewController: UIViewController {
     }
     
     func setupUI() {
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.frame = view.bounds
+        view.addSubview(containerView)
         view.addSubview(imageView)
         view.addSubview(pickerButton)
+//        view.addSubview(imageView)
+//        view.addSubview(pickerButton)
         
         NSLayoutConstraint.activate([
             
@@ -95,6 +103,13 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
         let image = info[.originalImage] as! UIImage
         self.imageView.image = image
         self.dismiss(animated: true)
+        self.containerView.backgroundColor = UIColor(patternImage: imageView.image!)
+        
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        containerView.addSubview(blurEffectView)
     }
 }
 
