@@ -15,6 +15,7 @@ class MainViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Pick Image", for: .normal)
         button.setTitleColor( .red, for: .normal)
+        button.layer.cornerRadius = 12
         button.backgroundColor = .systemGray2
         return button
     }()

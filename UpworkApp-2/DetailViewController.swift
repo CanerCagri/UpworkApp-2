@@ -13,6 +13,8 @@ class DetailViewController: UIViewController {
     let scrollView = UIScrollView()
     var image = UIImage(named: "circle")
     
+    let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffect.Style.light))
+    
     let imageView: UIImageView = {
         var view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -22,27 +24,37 @@ class DetailViewController: UIViewController {
         return view
     }()
     
+    let reverseButton: UIButton = {
+        var button = UIButton()
+        button.setTitle("Revert To Originial", for: .normal)
+        button.backgroundColor = .systemGray2
+        button.layer.cornerRadius = 12
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureViewController()
         setupUI()
+        rightBarButton()
     }
     
     func configureViewController() {
         view.backgroundColor = .systemBackground
         view.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePan)))
+        reverseButton.addTarget(self, action: #selector(reverseButtonTapped), for: .touchUpInside)
         scrollView.maximumZoomScale = 10.0
         scrollView.minimumZoomScale = 1.0
         scrollView.delegate = self
+        reverseButton.isHidden = true
         loadImageAndBlur()
     }
-
+    
     func loadImageAndBlur() {
         imageView.image = image
         scrollView.backgroundColor = UIColor(patternImage: imageView.image!)
         
-        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.frame = scrollView.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         scrollView.addSubview(blurEffectView)
@@ -61,16 +73,26 @@ class DetailViewController: UIViewController {
     }
     
     @objc func rightBarButtonTapped() {
-        
+        reverseButton.isHidden = false
+        navigationItem.rightBarButtonItem = nil
+        imageView.removeFromSuperview()
+        blurEffectView.removeFromSuperview()
+    }
+    
+    @objc func reverseButtonTapped() {
+        rightBarButton()
+        scrollView.addSubview(blurEffectView)
+        scrollView.addSubview(imageView)
     }
     
     func setupUI() {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
         scrollView.addSubview(imageView)
+        scrollView.addSubview(reverseButton)
         
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -79,6 +101,9 @@ class DetailViewController: UIViewController {
             imageView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 10),
             imageView.widthAnchor.constraint(equalToConstant: 300),
             imageView.heightAnchor.constraint(equalToConstant: 300),
+            
+            reverseButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            reverseButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
     }
 }
