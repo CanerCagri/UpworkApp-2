@@ -1,6 +1,6 @@
 # UpworkApp-2
 
-I started to make the jobs I saw on Upwork, even if employer didn't return to my proposal.
+I started to make the jobs I saw on Upwork, when employer didn't return to my offer or rejected.
 
 
 Job Link: https://www.upwork.com/jobs/~018915cff62659ec90
